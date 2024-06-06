@@ -19,8 +19,8 @@ jobs:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         - uses: docker/login-action@v2
           with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            username: ${{ secrets.USERNAME_DOCKER }}
+            password: ${{ secrets.TOKEN_DOCKER }}
         - uses: docker/build-push-action@v3
           with:
             push: true
