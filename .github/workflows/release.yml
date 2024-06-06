@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - '*.*.*'
 
 jobs:
   release:
@@ -23,7 +23,7 @@ jobs:
 
     - name: Configure git
       run: |
-        git config --global user.email "cyrillekouamo@gmail.com.com"
+        git config --global user.email "kouamocyrille@gmail.com"
         git config --global user.name "cyrilnoel"
 
     - name: Run Goreleaser
@@ -31,6 +31,8 @@ jobs:
       with:
         version: latest
         args: release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build Docker image
       env:
