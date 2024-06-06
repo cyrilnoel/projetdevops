@@ -23,8 +23,8 @@ jobs:
 
     - name: Configure git
       run: |
-        git config --global user.email "kouamocyrille@gmail.com"
-        git config --global user.name "cyrilnoel"
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
 
     - name: Run Goreleaser
       uses: goreleaser/goreleaser-action@v2
