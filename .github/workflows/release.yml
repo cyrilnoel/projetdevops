@@ -34,10 +34,15 @@ jobs:
 
 
       - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.USERNAME_DOCKER }}/${{ github.repository }}:${{ github.ref_name }} .
-          echo $TOKEN_DOCKER | docker login -u $USERNAME_DOCKER --password-stdin
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.USERNAME_DOCKER  }}
+          IMAGE_NAME: ${{ secrets.USERNAME_DOCKER }}/${{ github.event.repository.name }}:${{ github.ref_name }}
+        run: |
+          docker build -t $IMAGE_NAME .
+
+      - name: Push Docker image
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo $TOKEN_DOCKER | docker login -u $USERNAME_DOCKER --password-stdin
+          docker push $IMAGE_NAME
