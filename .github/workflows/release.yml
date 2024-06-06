@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*.*.*'
+      - '*'
 
 jobs:
   release:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Ensure the full history is checked out to avoid shallow clone issues
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -21,10 +23,15 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Configure git
+    - name: Commit go.sum changes if any
       run: |
-        git config --global user.email "kouamocyrille@gmail.com"
-        git config --global user.name "cyrilnoel"
+        if [ -n "$(git status --porcelain)" ]; then
+          git config --global user.email "john.doe@example.com"
+          git config --global user.name "JohnDoe"
+          git add go.sum
+          git commit -m "Update go.sum"
+          git push
+        fi
 
     - name: Run Goreleaser
       uses: goreleaser/goreleaser-action@v2
