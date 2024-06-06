@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - '*.*.*'
 
 jobs:
   release:
@@ -30,7 +30,16 @@ jobs:
           git config --global user.name "JohnDoe"
           git add go.sum
           git commit -m "Update go.sum"
-          git push
+          # Check if HEAD is detached
+          if [ -z "$(git symbolic-ref HEAD --short)" ]; then
+            # Detached HEAD state
+            echo "Detached HEAD state detected."
+            # Push changes to the remote branch associated with the current tag
+            git push origin HEAD:refs/tags/${{ github.ref }}
+          else
+            # Not detached, push changes to the current branch
+            git push
+          fi
         fi
 
     - name: Run Goreleaser
