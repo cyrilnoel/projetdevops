@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '*.*.*'
+      - '*'
 
 jobs:
   release:
@@ -12,8 +12,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Ensure the full history is checked out to avoid shallow clone issues
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -23,38 +21,23 @@ jobs:
     - name: Install dependencies
       run: go mod tidy
 
-    - name: Commit go.sum changes if any
+    - name: Configure git
       run: |
-        if [ -n "$(git status --porcelain)" ]; then
-          git config --global user.email "kouamocyrille@gmail.com.com"
-          git config --global user.name "cyrilnoel"
-          git add go.sum
-          git commit -m "Update go.sum"
-          # Check if HEAD is detached
-          if [ -z "$(git symbolic-ref HEAD --short)" ]; then
-            # Detached HEAD state
-            echo "Detached HEAD state detected."
-            # Push changes to the remote branch associated with the current tag
-            git push origin HEAD:refs/tags/${{ github.ref }}
-          else
-            # Not detached, push changes to the current branch
-            git push
-          fi
-        fi
+        git config --global user.email "cyrillekouamo@gmail.com.com"
+        git config --global user.name "cyrilnoel"
 
     - name: Run Goreleaser
       uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
-        args: release --clean
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        args: release
 
     - name: Build Docker image
       env:
         IMAGE_NAME: ${{ secrets.USERNAME_DOCKER }}/${{ github.event.repository.name }}:${{ github.ref_name }}
       run: |
         docker build -t $IMAGE_NAME .
+
 
     - name: Push Docker image
       env:
