@@ -26,8 +26,8 @@ jobs:
     - name: Commit go.sum changes if any
       run: |
         if [ -n "$(git status --porcelain)" ]; then
-          git config --global user.email "john.doe@example.com"
-          git config --global user.name "JohnDoe"
+          git config --global user.email "kouamocyrille@gmail.com.com"
+          git config --global user.name "cyrilnoel"
           git add go.sum
           git commit -m "Update go.sum"
           # Check if HEAD is detached
