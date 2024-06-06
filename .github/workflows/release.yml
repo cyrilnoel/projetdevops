@@ -52,7 +52,7 @@ jobs:
 
     - name: Build Docker image
       env:
-        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:${{ github.ref_name }}
+        IMAGE_NAME: ${{ secrets.USERNAME_DOCKER }}/${{ github.event.repository.name }}:${{ github.ref_name }}
       run: |
         docker build -t $IMAGE_NAME .
 
@@ -61,5 +61,5 @@ jobs:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       run: |
-        echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
+        echo $TOKEN_DOCKER | docker login -u $USERNAME_DOCKER --password-stdin
         docker push $IMAGE_NAME
