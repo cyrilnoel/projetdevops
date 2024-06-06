@@ -37,8 +37,6 @@ jobs:
         IMAGE_NAME: ${{ secrets.USERNAME_DOCKER }}/${{ github.event.repository.name }}:${{ github.ref_name }}
       run: |
         docker build -t $IMAGE_NAME .
-
-
     - name: Push Docker image
       env:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
