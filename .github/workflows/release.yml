@@ -3,11 +3,12 @@ name: Release
 on:
   push:
     tags:
-      - '*.*.*'
+      - '*'
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -22,14 +23,14 @@ jobs:
 
     - name: Configure git
       run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
+        git config --global user.email "cyrillekouamo@gmail.com.com"
+        git config --global user.name "cyrilnoel"
 
     - name: Run Goreleaser
       uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
-        args: release --rm-dist
+        args: release
 
     - name: Build Docker image
       env:
