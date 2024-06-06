@@ -8,39 +8,29 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.19'
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
 
-    - name: Install dependencies
-      run: go mod tidy
+      - name: Install dependencies
+        run: go mod download
 
-    - name: Configure git
-      run: |
-        git config --global user.email "cyrillekouamo@gmail.com.com"
-        git config --global user.name "cyrilnoel"
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist
 
-    - name: Run Goreleaser
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        version: latest
-        args: release
-
-    - name: Build Docker image
-      env:
-        IMAGE_NAME: ${{ secrets.USERNAME_DOCKER }}/${{ github.event.repository.name }}:${{ github.ref_name }}
-      run: |
-        docker build -t $IMAGE_NAME .
-    - name: Push Docker image
-      env:
-        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      run: |
-        echo $TOKEN_DOCKER | docker login -u $USERNAME_DOCKER --password-stdin
-        docker push $IMAGE_NAME
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.USERNAME_DOCKER }}/${{ github.repository }}:${{ github.ref_name }} .
+          echo $TOKEN_DOCKER | docker login -u $USERNAME_DOCKER --password-stdin
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{ github.ref_name }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.USERNAME_DOCKER  }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
